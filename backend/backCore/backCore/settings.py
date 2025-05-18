@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'backCore.urls'
@@ -135,3 +136,5 @@ AUTH_USER_MODEL = 'users.User'
 
 # USE_TZ = False  # Enable timezone-aware datetimes
 # TIME_ZONE = 'Asia/Kolkata'  # Set to your desired timezone
+
+CORS_ORIGIN_ALLOW_ALL = True

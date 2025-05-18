@@ -6,24 +6,28 @@ from books.models import BookStock
 @receiver(post_save, sender=Borrow)
 def update_book_stock_on_borrow(sender, instance, created, **kwargs):
     if created:
-        # Reduce stock when book is borrowed
         stock = BookStock.objects.filter(book=instance.book).first()
         if stock and stock.quantity > 0:
-            stock.quantity -= 1
-            stock.save()
+            stock.quantity += 1
+            stock.save()   
+        else:
+            BookStock.objects.create(book=instance.book, quantity=1)
 
 
 @receiver(pre_save, sender=Borrow)
 def restore_stock_on_return(sender, instance, **kwargs):
     if not instance.pk:
-        return  # Skip if this is a new record
+        return  # New record, no prior state
 
-    previous = Borrow.objects.get(pk=instance.pk)
+    try:
+        previous = Borrow.objects.get(pk=instance.pk)
+    except Borrow.DoesNotExist:
+        return
 
-    # Check if book was just returned
     if previous.return_date is None and instance.return_date is not None:
         stock = BookStock.objects.filter(book=instance.book).first()
-        if stock:
-            stock.quantity += 1
+        if stock and stock.quantity > 0:
+            stock.quantity -= 1
             stock.save()
-
+        else:
+            print(f"[ERROR] No BookStock found to restore for returned book: {instance.book}")

@@ -23,6 +23,7 @@ class Language(models.Model):
     def __str__(self):
         return self.name
 
+
 class Book(models.Model):
 
     title = models.CharField(max_length=255)
@@ -42,6 +43,11 @@ class Book(models.Model):
 
     def __str__(self):
         return f"{self.title} by {self.author}"
+    
+    @property
+    def total_stock(self):
+        borrowed_count = sum(stock.quantity for stock in self.book_stock.all())
+        return self.total_copies - borrowed_count
 
 class BookStock(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_stock')

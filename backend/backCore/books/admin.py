@@ -6,6 +6,7 @@ admin.site.register(Genre)
 admin.site.register(Author)
 admin.site.register(Language)
 # admin.site.register(Book)
+admin.site.register(BookStock)
 
 
 @admin.register(Book)
